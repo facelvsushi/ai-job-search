@@ -64,12 +64,18 @@ python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
 
 ### Login (once)
 
-```bash
-boss login     # pulls cookies from Chrome/Edge if logged in, else shows a QR code
-boss status    # confirm logged in
+BOSS直聘's `__zp_stoken__` cookie is written by the page's own JavaScript after login,
+so neither `boss login`'s QR path (pure HTTP, can't run JS) nor browser-cookie3 (blocked
+by Chrome's app-bound cookie encryption) can obtain it. Use the bundled CDP script
+instead — it launches a normal Chrome with only a debug port open (no automation flags),
+you log in there, and it reads the cookies over the DevTools protocol:
+
+```powershell
+python tools\china\boss_cdp_login.py [chrome|edge]
+boss status    # confirm logged in (should list __zp_stoken__ among the cookies)
 ```
 
-Scan the QR with the BOSS直聘 app on your phone when prompted.
+Scan the QR shown in the browser window with the BOSS直聘 app, or use password/SMS.
 
 ### Search & read
 
