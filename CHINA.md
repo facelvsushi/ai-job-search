@@ -65,17 +65,18 @@ python -c "import sysconfig; print(sysconfig.get_path('scripts'))"
 ### Login (once)
 
 BOSS直聘's `__zp_stoken__` cookie is written by the page's own JavaScript after login,
-so neither `boss login`'s QR path (pure HTTP, can't run JS) nor browser-cookie3 (blocked
-by Chrome's app-bound cookie encryption) can obtain it. Use the bundled CDP script
-instead — it launches a normal Chrome with only a debug port open (no automation flags),
-you log in there, and it reads the cookies over the DevTools protocol:
+so `boss login`'s QR path (pure HTTP, can't run JS) can't get it; browser-cookie3 is
+blocked by Chrome's app-bound cookie encryption; and any CDP connection *while the page
+is open* is detected by the risk engine (it redirects to about:blank). The reliable way
+is two steps — log in manually in your own browser, then read the cookies from that
+profile over CDP without touching the site:
 
 ```powershell
-python tools\china\boss_cdp_login.py [chrome|edge]
+# 1) In Chrome (or Edge): go to https://www.zhipin.com and log in (scan QR).
+# 2) CLOSE the browser completely.
+python tools\china\boss_cdp_login.py [chrome|edge]   # reads cookies from your profile
 boss status    # confirm logged in (should list __zp_stoken__ among the cookies)
 ```
-
-Scan the QR shown in the browser window with the BOSS直聘 app, or use password/SMS.
 
 ### Search & read
 
