@@ -120,8 +120,11 @@ def main() -> int:
     proc = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     if not wait_for_cdp(port, timeout_s=20):
-        print(f"[!] Could not attach — {channel} is probably still running.")
-        print(f"    Close {channel} completely, then re-run this script.")
+        exe = "chrome.exe" if channel == "chrome" else "msedge.exe"
+        print(f"[!] Could not attach — {channel} is still running (background process).")
+        print("    A closed window is not enough on Windows; quit it fully, e.g.:")
+        print(f"        taskkill /F /IM {exe}")
+        print("    then re-run this script.")
         proc.terminate()
         return 1
 
