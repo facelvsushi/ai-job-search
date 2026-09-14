@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
-"""Read BOSS直聘 login cookies from your own browser profile via CDP.
+"""Boss Zhipin login: log in manually in a dedicated Chrome, then read cookies.
 
-The key trick: BOSS直聘's anti-bot detects any DevTools/CDP connection *while the
-page is open* and redirects it to about:blank. So we do NOT open zhipin.com here.
+Why this shape (after several dead-ends):
 
-Instead:
-  1. You log in to https://www.zhipin.com in your normal Chrome/Edge (fully manual,
-     no automation — nothing to detect).
-  2. You CLOSE that browser.
-  3. This script re-opens your real browser profile with only a debug port, stays
-     on about:blank (so zhipin's risk JS never runs), and reads the cookies straight
-     from the live cookie jar over CDP.
+  - Launching Chrome with your REAL profile + --remote-debugging-port fails on
+    Windows because Chrome's singleton mechanism hands the command off to any
+    lingering background chrome.exe, which opens an about:blank window but
+    IGNORES the debug port (=> "Could not attach"). So we use a FRESH temp
+    profile instead — no singleton conflict, your normal Chrome stays untouched.
 
-Reading cookies over CDP also sidesteps two other dead-ends:
-  - browser_cookie3 can't decrypt modern Chrome's app-bound cookies (Chrome 127+).
-  - `boss login` QR can't get __zp_stoken__ (it's written by the page's own JS).
+  - BOSS直聘's risk engine redirects the page to about:blank when a DevTools/CDP
+    client is ATTACHED while the page is open. So we do NOT attach during login:
+    you log in manually in the window, and only AFTER you press Enter does the
+    script connect once to read the cookies (which are already in the cookie jar).
+
+  - Reading cookies over CDP also sidesteps browser_cookie3 (blocked by Chrome's
+    app-bound encryption) and `boss login` QR (which can't get __zp_stoken__).
 
 Usage:
-    1) Log in to zhipin.com in Chrome (or Edge), then CLOSE it.
-    2) python boss_cdp_login.py [chrome|edge]
-    3) boss status    # verify
+    python boss_cdp_login.py [chrome|edge]
 """
 
 import json
@@ -27,10 +26,12 @@ import shutil
 import socket
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 
 REQUIRED_COOKIES = {"__zp_stoken__", "wt2", "wbg", "zp_at"}
+HOME_URL = "https://www.zhipin.com/"
 CREDENTIAL_FILE = Path.home() / ".config" / "boss-cli" / "credential.json"
 
 BROWSERS = {
@@ -40,14 +41,12 @@ BROWSERS = {
             r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
             str(Path.home() / r"AppData\Local\Google\Chrome\Application\chrome.exe"),
         ],
-        "user_data": Path.home() / "AppData" / "Local" / "Google" / "Chrome" / "User Data",
     },
     "edge": {
         "exe": [
             r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
             r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
         ],
-        "user_data": Path.home() / "AppData" / "Local" / "Microsoft" / "Edge" / "User Data",
     },
 }
 
@@ -89,50 +88,47 @@ def main() -> int:
         print(f"[!] Could not locate {channel} on this machine.")
         return 1
 
-    user_data = BROWSERS[channel]["user_data"]
-    if not user_data.exists():
-        print(f"[!] No {channel} profile found at: {user_data}")
-        print(f"    Have you opened {channel} at least once on this machine?")
-        return 1
-
     try:
         from playwright.sync_api import sync_playwright
     except ImportError:
         print("[!] playwright is not installed. Run: pip install playwright")
         return 1
 
-    print(f"[*] Reading zhipin.com cookies from your {channel} profile.")
-    print("    If you have NOT logged in yet:")
-    print(f"      1) Open {channel}, go to https://www.zhipin.com and log in (scan QR).")
-    print(f"      2) CLOSE {channel} completely.")
-    print("         (it must be closed, so this script can re-open the profile)\n")
-
     port = _free_port()
+    profile_dir = tempfile.mkdtemp(prefix="boss-login-")
+
     args = [
         browser,
         f"--remote-debugging-port={port}",
-        f"--user-data-dir={user_data}",
+        f"--user-data-dir={profile_dir}",
         "--no-first-run",
         "--no-default-browser-check",
+        "--disable-gpu",
+        "--disable-features=CalculateNativeWinOcclusion",
         "--remote-allow-origins=*",
-        "about:blank",
+        HOME_URL,
     ]
+
+    print(f"[*] Opening a dedicated {channel} window (separate from your normal one).")
+    print("    In that window:")
+    print("      1) Click 登录 (top-right), then scan the QR with the BOSS直聘 APP.")
+    print("      2) Confirm on your phone until you see your account in the page.\n")
+
     proc = subprocess.Popen(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    if not wait_for_cdp(port, timeout_s=20):
-        exe = "chrome.exe" if channel == "chrome" else "msedge.exe"
-        print(f"[!] Could not attach — {channel} is still running (background process).")
-        print("    A closed window is not enough on Windows; quit it fully, e.g.:")
-        print(f"        taskkill /F /IM {exe}")
-        print("    then re-run this script.")
+    if not wait_for_cdp(port):
+        print(f"[!] {channel} did not open its debugging port in time.")
         proc.terminate()
         return 1
 
     try:
+        # IMPORTANT: do not attach a CDP client yet — that is what the anti-bot
+        # detects. Wait for the user to finish logging in first.
+        input("    When you are logged in and can see your account, press Enter here ... ")
+
         with sync_playwright() as p:
             browser_cdp = p.chromium.connect_over_cdp(f"http://127.0.0.1:{port}")
             context = browser_cdp.contexts[0] if browser_cdp.contexts else browser_cdp.new_context()
-
             cookies = {
                 c["name"]: c["value"]
                 for c in context.cookies()
@@ -140,27 +136,26 @@ def main() -> int:
             }
             browser_cdp.close()
 
-            if not cookies:
-                print(f"[!] No zhipin.com cookies found in {channel}.")
-                print("    Log in to https://www.zhipin.com in the browser first,")
-                print("    close it, then re-run this script.")
-                return 1
+        if not cookies:
+            print("[!] No zhipin.com cookies found — you may not have finished logging in.")
+            print("    Re-run this script and complete the login first.")
+            return 1
 
-            missing = REQUIRED_COOKIES - set(cookies)
-            if missing:
-                print(f"[!] Login incomplete — missing cookies: {', '.join(sorted(missing))}")
-                print("    Make sure you completed the login (scan QR + confirm),")
-                print("    then close the browser and re-run this script.")
-                return 1
+        missing = REQUIRED_COOKIES - set(cookies)
+        if missing:
+            print(f"[!] Login incomplete — missing cookies: {', '.join(sorted(missing))}")
+            print("    Finish the login (scan QR + confirm on phone), then re-run.")
+            return 1
 
-            _save(cookies)
-            print(f"[OK] Logged in. Saved {len(cookies)} cookies to:")
-            print(f"     {CREDENTIAL_FILE}")
-            print("     Verify with:  boss status")
-            return 0
-    except Exception as exc:
-        print(f"[!] Failed: {exc}")
-        return 1
+        _save(cookies)
+        print(f"\n[OK] Logged in. Saved {len(cookies)} cookies:")
+        print(f"     {', '.join(sorted(cookies))}")
+        print(f"     -> {CREDENTIAL_FILE}")
+        print("     Verify with:  boss status")
+        return 0
+    except KeyboardInterrupt:
+        print("\n[!] Cancelled.")
+        return 130
     finally:
         try:
             proc.terminate()
