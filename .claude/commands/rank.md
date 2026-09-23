@@ -170,6 +170,7 @@ Rules for the presentation:
 
 - Every table (shortlist, below threshold, excluded) includes the posting URL as a clickable link - use the `url` in `apply`'s output (not the entry's key, which for some portals is a company+title composite rather than the URL), so this never requires an extra lookup. Never drop the link for brevity.
 - A shortlisted job with `language_gate: FLAG` gets a ⚠ marker next to its Title (same treatment as a location FLAG) and its `language_note` quoted in that job's "Why these ranked highest" writeup, so the language-level gap is visible without digging into the raw JSON.
+- For each shortlisted job, name the **CV language** it will use: derive the region from the job's location, look it up in the `CV language by region:` table in CLAUDE.md, and state it in that job's "Why these ranked highest" writeup (e.g. "will use: Simplified Chinese CV"). This ties region and CV version together from triage onward, so a later `/apply` drafts the version the user already saw flagged.
 - Every claim traces to fetched posting text or the profile - no invented details.
 - Say explicitly that these are **triage scores from the posting text only**, and that `/apply` will re-evaluate with company research before anything is drafted.
 - Then ask: "Want to apply to any of these? Give me the number(s) and I'll start with the full `/apply` workflow."

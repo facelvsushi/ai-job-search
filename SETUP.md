@@ -50,7 +50,7 @@ Install a LaTeX distribution to compile the generated `.tex` files to PDF:
 - **macOS:** [MacTeX](https://tug.org/mactex/)
 - **Linux:** `sudo apt install texlive-full` or `sudo dnf install texlive-scheme-full`
 
-The CV compiles with `lualatex` (pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors). The cover letter compiles with `xelatex` because `cover.cls` requires `fontspec` for its custom Lato/Raleway fonts.
+Both the CV and the cover letter compile with `xelatex` — the CV loads `xeCJK` so one file renders both Latin and Chinese text (pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors), and `cover.cls` requires `fontspec` for its custom Lato/Raleway fonts.
 
 #### Minimal TeX install: TinyTeX/BasicTeX
 
@@ -77,7 +77,7 @@ For BasicTeX/MacTeX, make sure the TeX binary directory is on `PATH` first (for 
 Quick smoke tests after setup:
 
 ```bash
-cd cv && lualatex -interaction=nonstopmode -halt-on-error main_example.tex && cd ..
+cd cv && xelatex -interaction=nonstopmode -halt-on-error main_example.tex && cd ..
 
 SMOKE_DIR="$(mktemp -d /tmp/ai-job-cover-smoke.XXXXXX)"
 cp -R cover_letters/cover.cls cover_letters/OpenFonts "$SMOKE_DIR/"
@@ -121,7 +121,7 @@ Drop `--admin` if MiKTeX is installed for the current user only. If a package na
 Quick smoke tests after setup (PowerShell):
 
 ```powershell
-Set-Location cv; lualatex -interaction=nonstopmode -halt-on-error main_example.tex; Set-Location ..
+Set-Location cv; xelatex -interaction=nonstopmode -halt-on-error main_example.tex; Set-Location ..
 
 $SmokeDir = New-Item -ItemType Directory -Path (Join-Path $env:TEMP "ai-job-cover-smoke-$(Get-Random)")
 Copy-Item cover_letters\cover.cls, cover_letters\OpenFonts -Destination $SmokeDir -Recurse
@@ -291,13 +291,13 @@ After `/apply` creates the LaTeX files:
 
 ```bash
 # Bash / zsh / Git Bash
-cd cv && lualatex main_<company>_<role>.tex && cd ..
+cd cv && xelatex main_<company>_<role>.tex && cd ..
 cd cover_letters && xelatex cover_<company>_<role>.tex && cd ..
 ```
 
 ```powershell
 # PowerShell
-Set-Location cv; lualatex main_<company>_<role>.tex; Set-Location ..
+Set-Location cv; xelatex main_<company>_<role>.tex; Set-Location ..
 Set-Location cover_letters; xelatex cover_<company>_<role>.tex; Set-Location ..
 ```
 
@@ -338,7 +338,7 @@ This is expected if you haven't set up salary benchmarking. The `/apply` workflo
 Make sure Bun is installed and you ran `bun install` in each CLI directory. The tools require network access to fetch job listings.
 
 ### LaTeX compilation errors
-- CV: uses `lualatex` (pdflatex often fails on modern MiKTeX with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly)
+- CV: uses `xelatex` (the template loads `xeCJK` so one file renders both Latin and Chinese text; pdflatex often fails on modern MiKTeX with `fontawesome5` font-expansion errors)
 - Cover letter: uses `xelatex` (for custom fonts in `OpenFonts/fonts/`)
 - Make sure your LaTeX distribution includes the `moderncv` package
 

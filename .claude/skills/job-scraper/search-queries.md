@@ -1,84 +1,132 @@
 # Search Queries for Job Scraper
 
-<!-- SETUP: Customize these queries based on your skills, target roles, and location -->
+<!-- Populated by /setup, 2026-09-15. Function-based categories, per market. -->
 
 ## Installed portal CLIs (primary for `/scrape`)
 
-`/scrape` discovers every portal skill under `.agents/skills/*/SKILL.md` and runs its CLI first. Shipped country-agnostic CLIs include `linkedin-search` and `freehire-search`; Danish demos and any skill you add with `/add-portal` are included the same way. You do **not** need a matching `site:` line below for those CLIs to run.
+`/scrape` discovers every portal skill under `.agents/skills/*/SKILL.md` and runs its CLI first. For this setup:
 
-The `site:` query templates in this file are the **WebSearch fallback** — for portals without a CLI, company career pages, or when a CLI fails.
+- **`linkedin-search`** (enabled) — primary source for **Hong Kong** postings
+- **`gba-hk-search`** (enabled) — **GBA 大湾区** postings open to HK residents: HK Labour Dept 「大湾区青年就业计划」official vacancy database + WeChat 公众号 exports in `job_scraper/wechat_inbox/` (run `ingest` after dropping new exports; official-source results carry `deadline: null`, WeChat results carry extracted deadlines)
+- **`freehire-search`** (enabled) — country-agnostic, keep as secondary
+- Danish demos (`jobindex`, `jobbank`, `jobdanmark`, `jobnet`) — **disabled**, not this market
+- **Mainland China: BOSS直聘 runs through the `boss` terminal CLI** (`boss search ...`, see `投递指南.md` 路线 A), not through `/scrape`. Run the `boss search` lines below in a terminal, then paste the JD into `/apply`
+- **猎聘 (Liepin)** has no CLI — covered by the `site:liepin.com` WebSearch fallback below
 
-**Language scope:** write every query category in every language listed in your CLAUDE.md Languages table (typically 1-2, sometimes more). A posting requiring a language you have *not* declared, as a job condition, is excluded before scoring; a posting requiring a *higher level* than you declared in a language you *do* work in is flagged for your own judgment, not excluded — see `04-job-evaluation.md`'s Language Gate, the single source of truth for this rule. Translate each category's keywords rather than machine-translating word-for-word (e.g. "Frontend Developer" -> "Desarrollador Frontend", not a literal word-for-word translation) if you work in more than one language.
+The `site:` query templates are the **WebSearch fallback** — for portals without a CLI, company career pages, or when a CLI fails.
+
+**Language scope:** queries are written in English (Hong Kong / overseas) and Simplified Chinese 简体中文 (mainland), the two markets in scope. HK postings written in Traditional Chinese are fine to read — Cantonese native with native literacy in both scripts.
 
 ## Search Sites
 
-Primary (your market's job boards - scaffold one with `/add-portal`):
-- **[YOUR_JOB_BOARD]** - your market's largest general job board
-- **linkedin.com/jobs** - LinkedIn job listings (filter: [YOUR_COUNTRY] / [YOUR_CITY]); also covered by `linkedin-search` CLI
-- **[YOUR_INDUSTRY_JOB_BOARD]** - a niche/industry board for your field (optional)
-- **[YOUR_ADDITIONAL_JOB_BOARD]** - another major board for your market (optional)
+Primary:
+- **linkedin.com/jobs** — Hong Kong (also covered by `linkedin-search` CLI)
+- **zhipin.com (BOSS直聘)** — mainland GBA, via `boss` CLI in terminal
+- **liepin.com (猎聘)** — mainland GBA, WebSearch fallback
 
-Secondary (company career pages via Google):
-- Direct Google searches with `site:` filters for known target companies
+Company career pages (user request: check big companies' official sites directly — more accurate):
+- `careers.tencent.com` (腾讯), `hr.163.com` (网易), `zhaopin.meituan.com` / `careers.meituan.com` (美团)
+- `hsbc.com.hk`, `hangseng.com`, `bochk.com` (HK banks)
+- `deloitte.com`, `pwc.com`, `kpmg.com`, `ey.com` (Big Four, HK + mainland GBA)
+
+## Exclusions (never search; also screened at /rank)
+
+- 律师 / 实习律师 / 公司法务 / 合规 (legal-practice and compliance roles)
+- 房地产销售 (real-estate sales)
+- Pure quantitative-analysis roles (数据分析师 / BI Analyst as the core daily work)
+- 券商 (securities brokers) front office and 量化 (quant) roles — deprioritized: may surface but rank at bottom
+- Mainland 央企/国企 (central & state-owned enterprises) **except** Shenzhen Qianhai (前海) employers with HK-resident employment support — those get a positive "Qianhai HK-friendly" flag
 
 ## Query Categories
 
-Queries are grouped by priority. Write **each category in every language from your Languages table** (see Language scope above). Combine each query with your location terms (e.g. your city, region, or metro area) where the site supports it.
+Queries are grouped by priority. Combine each query with the market's location terms where the site supports it.
 
-**Organize by function, not job title.** The same underlying work carries different titles across companies and markets (a "Data Scientist" role at one employer may be posted as "Insights Analyst" or "Data Consultant" at another). Name each priority category after the function it covers, and list several plausible job titles as query variants within that category rather than betting an entire priority tier on one exact title string.
+### Priority 1: Hong Kong — Management Trainee & client-facing graduate programmes
 
-### Priority 1: [YOUR_PRIMARY_ROLE_TYPE]
-
-These match your strongest and most desired career direction.
+Strongest and most desired direction: banks, corporates, and insurers' graduate schemes.
 
 ```
-site:[YOUR_JOB_BOARD] "[YOUR_PRIMARY_JOB_TITLE_1]" [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "[YOUR_PRIMARY_JOB_TITLE_2]" [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "[YOUR_KEY_SKILL]" [YOUR_CITY]
-site:linkedin.com/jobs "[YOUR_PRIMARY_JOB_TITLE_1]" [YOUR_COUNTRY]
+site:linkedin.com/jobs "Management Trainee" Hong Kong
+site:linkedin.com/jobs "Graduate Trainee" OR "Graduate Programme" Hong Kong
+site:linkedin.com/jobs "Management Associate" bank Hong Kong
+site:linkedin.com/jobs graduate trainee insurance Hong Kong AIA OR Prudential OR Manulife OR AXA
+site:linkedin.com/jobs 管理培訓生 香港
 ```
 
-### Priority 2: [YOUR_DOMAIN_EXPERTISE]
+### Priority 2: Hong Kong — Consulting & Big Four (tax / consulting)
 
-These match your domain expertise.
-
-```
-site:[YOUR_JOB_BOARD] [YOUR_DOMAIN_KEYWORD_1] [YOUR_CITY] OR [YOUR_REGION]
-site:[YOUR_JOB_BOARD] [YOUR_DOMAIN_KEYWORD_2] [YOUR_COUNTRY]
-site:linkedin.com/jobs [YOUR_DOMAIN_KEYWORD_1] [YOUR_CITY] [YOUR_COUNTRY]
-```
-
-### Priority 3: [YOUR_ADJACENT_ROLE_TYPE]
-
-Adjacent roles you could pivot into.
+Recommended by the candidate's university teacher; emphasised application direction.
 
 ```
-site:[YOUR_JOB_BOARD] "[YOUR_ADJACENT_TITLE_1]" [YOUR_KEY_SKILL] [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "[YOUR_ADJACENT_TITLE_2]" [YOUR_KEY_SKILL] [YOUR_CITY]
+site:linkedin.com/jobs "Consultant" graduate Hong Kong
+site:linkedin.com/jobs "Tax Associate" OR "Tax Consultant" OR "Tax Graduate" Hong Kong
+site:linkedin.com/jobs "Business Consulting" graduate Hong Kong
+site:deloitte.com OR site:pwc.com OR site:kpmg.com OR site:ey.com graduate tax Hong Kong
 ```
 
-### Priority 4: Broader Technical / Consulting
+### Priority 3: Mainland GBA — 管培生, 大厂 marketing, 四大税务
 
-Wider net for general technical roles.
+Run the `boss` lines in a terminal (Shenzhen first, then Guangzhou); Liepin via WebSearch.
 
 ```
-site:[YOUR_JOB_BOARD] [YOUR_KEY_SKILL] developer [YOUR_CITY]
-site:linkedin.com/jobs "[YOUR_KEY_SKILL] developer" [YOUR_CITY]
-site:[YOUR_JOB_BOARD] "technical consultant" [YOUR_DOMAIN] [YOUR_CITY]
+boss search "管培生" --city 深圳
+boss search "管培生" --city 广州
+boss search "管理培训生" --city 深圳 --salary 10-25K
+boss search "市场营销" --city 深圳
+boss search "品牌营销" --city 广州
+site:liepin.com 管培生 深圳
+site:liepin.com 市场营销 OR 品牌营销 深圳 OR 广州
+site:deloitte.com.cn OR site:pwccn.com OR site:kpmg.com.cn OR site:ey.51job.com 税务 深圳 OR 广州 校园招聘
+```
+
+### Priority 3.5: GBA 港澳青年专项 — 大湾区青年就业计划 & 前海/南沙/横琴 (gba-hk-search CLI)
+
+Primary via the `gba-hk-search` CLI (auto-discovered). WebSearch fallback for the scheme and the mainland-side programs that have no listing pages:
+
+```
+bun run .agents/skills/gba-hk-search/cli/src/cli.ts search --limit 15 --format json
+bun run .agents/skills/gba-hk-search/cli/src/cli.ts ingest --format table
+site:jobs.gov.hk 大灣區青年就業計劃
+前海 港澳青年 招聘 2026
+南沙 OR 横琴 港澳青年 專項招聘
+```
+
+公众号专项文章（前海/南沙/横琴大多只在此发布）：用 wechat-article-exporter 导出 `watchlist.md` 里公众号的最新文章 → 投入 `job_scraper/wechat_inbox/` → 跑 `ingest`。
+
+### Priority 4: Gaming — 游戏策划 / 游戏推广 (personal interest: Tencent, NetEase, other game 大厂)
+
+```
+site:careers.tencent.com 游戏策划 深圳
+site:careers.tencent.com 游戏推广 OR 市场营销 深圳
+boss search "游戏策划" --city 深圳
+boss search "游戏推广" --city 深圳 OR 广州
+site:hr.163.com 游戏策划 OR 游戏运营 广州
+site:linkedin.com/jobs game marketing OR publishing Hong Kong OR Shenzhen
+```
+
+### Priority 5: Broader client-facing graduate roles (wider net)
+
+All sales-like roles are acceptable **except real-estate sales**.
+
+```
+site:linkedin.com/jobs "Business Development" graduate Hong Kong
+site:linkedin.com/jobs "Client Relationship" OR "Customer Success" graduate Hong Kong
+boss search "储备干部" --city 深圳 OR 广州
+site:liepin.com 客户经理 校招 深圳
 ```
 
 ## Location Filter
 
-When evaluating results, verify the job location is within reasonable commute distance from your home. Define acceptable areas:
-- [YOUR_CITY] and surrounding areas
-- [ACCEPTABLE_AREA_1]
-- [ACCEPTABLE_AREA_2]
-- [BORDERLINE_AREA] (borderline - ~X min by transit)
-- [TOO_FAR_AREA] (too far)
+When evaluating results, verify the job location is within the GBA:
+- **Hong Kong** — ideal (1st priority)
+- **Shenzhen** — acceptable (2nd); flag 前海 Qianhai employers with HK-resident employment support for special consideration
+- **Guangzhou** — borderline (3rd)
+- **Foshan 佛山 / other GBA cities under 大湾区青年就业计划** — in scope when the posting is a scheme vacancy (employed by the HK entity under HK law); otherwise apply the distance rule
+- Anywhere outside the Greater Bay Area — too far, exclude
 
 ## Language Filter
 
-Your working languages and levels are in CLAUDE.md's Languages table. When filtering scraped results, apply `04-job-evaluation.md`'s Language Gate: a posting requiring a language you haven't declared at all is excluded; a posting requiring a higher level than you declared in a language you do work in is not excluded, flag it clearly instead (see `job-scraper/SKILL.md`'s Step 3 "Quick Fit Assessment" for how the flag surfaces in `/scrape` output). Postings simply *written* in a language you don't work in, that don't require it on the job, are fine.
+Your working languages and levels are in CLAUDE.md's Languages table. When filtering scraped results, apply `04-job-evaluation.md`'s Language Gate: a posting requiring a language you haven't declared at all is excluded; a posting requiring a higher level than you declared in a language you do work in (e.g. "native English") is not excluded, flag it clearly instead. Postings simply *written* in Traditional Chinese or English that don't require an undeclared language on the job are fine.
 
 ## Date Filter
 

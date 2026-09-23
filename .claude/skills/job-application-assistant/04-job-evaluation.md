@@ -28,6 +28,8 @@ Read the posting's eligibility / work rights / "who can apply" section **verbati
 
 If the candidate's permit also constrains *hours* or *start date* (a student visa with a term-time cap, a permit that begins on graduation), record that as a second gate under this section during `/setup`, with the specific dates. Do not merge it with the eligibility question above — they fail for different reasons and need different answers.
 
+**Candidate eligibility snapshot (from /setup, 2026-09-15):** Hong Kong permanent resident. Hong Kong roles: no restriction. Mainland roles: private, foreign-invested, and listed companies are open to HK residents; central and state-owned enterprises (央企/国企) generally are not, except Shenzhen Qianhai employers that actively support HK-resident employment — see the screening rules below.
+
 A role that fails this gate is not scored and not drafted. Everything below applies only to roles that pass it.
 
 ## Language Gate — run before scoring
@@ -46,6 +48,22 @@ Judge the level comparison the same way you judge everything else in this framew
 
 **Worked example:** a candidate whose Languages table lists Spanish (Native) and English (B1/B2). A posting requiring "fluent Russian" → **FAIL**, Russian isn't declared at all. A posting requiring "fluent English" → **FLAG**, English is declared but "fluent" plausibly exceeds B1/B2 — score and draft the application, but tell the candidate this posting's bar may be a stretch and let them decide. A posting requiring "conversational English" or unspecified English → **PASS**, B1/B2 clears a "conversational" bar cleanly.
 
+## Candidate-Specific Screening Rules (from /setup)
+
+Apply these before and alongside the scoring dimensions. They encode the candidate's own market constraints (recorded 2026-09-15).
+
+**Hard exclusions (do not scrape, score, or draft):**
+- **Legal-practice roles:** 律师 / 实习律师 (lawyer), 公司法务 (in-house legal), 合规 (compliance). The candidate is deliberately leaving law; compliance stays excluded too (confirmed 2026-09-15).
+- **Real-estate sales** (房地产销售).
+- **Roles whose core daily work is quantitative data analysis** (pure 数据分析师 / BI Analyst) — candidate's stated weakness and energy drain.
+- **Mainland central/state-owned enterprises (央企/国企)** outside Shenzhen Qianhai — HK-resident hiring restrictions. Qianhai (前海) employers with HK-resident employment support are the exception and get a **positive flag** ("Qianhai HK-friendly").
+
+**Deprioritize (do not exclude, rank at bottom):**
+- Securities brokers (券商) front-office and quantitative (量化) roles — low admission chance for this profile and poor fit.
+
+**Salary floors:**
+- Below **HKD 20,000/month** (Hong Kong) or **RMB 10,000/month** (mainland) → flag prominently in the evaluation. Growth/training value can offset a moderate gap (first job chosen for learning), so flag rather than auto-reject; but a below-floor posting with no exceptional training value is effectively a deal-breaker.
+
 ## Scoring Dimensions
 
 Evaluate each job posting against these five dimensions:
@@ -60,9 +78,9 @@ How well do the required/preferred skills align with the candidate's capabilitie
 | 40-59 | Partial match, significant upskilling needed |
 | 0-39 | Fundamental mismatch |
 
-**Strong match areas:** [YOUR_PRIMARY_SKILLS]
-**Moderate match areas:** [YOUR_SECONDARY_SKILLS]
-**Weak match areas:** [SKILLS_YOU_LACK]
+**Strong match areas:** client & stakeholder communication (bilingual CN/EN, Cantonese native); marketing & brand execution; event planning and coordination; document/case management; financial-statement and audit foundations
+**Moderate match areas:** finance & accounting fundamentals (MSc coursework, tax-audit internship); project management (Gantt tracking, budgets, cross-department coordination); legal knowledge as business context (commercial/economic/finance law) — supporting context only, never for legal-practice roles (excluded)
+**Weak match areas:** quantitative/data analysis (self-declared weakness); programming and modeling (agentic coding with Claude Code/Codex is tooling, not engineering); actuarial/quant methods
 
 ### 2. Experience Match (0-100)
 Does work history align with what they're looking for? Match on the function and nature of the work performed, not the literal job title - a "Data Consultant" and a "Data Scientist" role can be functionally identical.
@@ -74,9 +92,9 @@ Does work history align with what they're looking for? Match on the function and
 | 40-59 | Adjacent experience, would need to make the case |
 | 0-39 | Unrelated experience |
 
-**Strong:** [YOUR_DIRECT_EXPERIENCE_DOMAINS]
-**Moderate:** [YOUR_ADJACENT_EXPERIENCE]
-**Entry-level:** [ROLES_WITH_LIMITED_EXPERIENCE]
+**Strong:** marketing/brand support and event execution with external stakeholders; client coordination and inquiry handling; professional document preparation
+**Moderate:** audit/tax support (Jinbao), student-association financial management, cross-department coordination
+**Entry-level:** management-trainee functions, consulting support, banking operations — these are the *target* role types with no direct experience yet; score honestly as entry-level (MT and graduate programmes hire for potential, so a low experience score is normal, not disqualifying, for these)
 
 ### 3. Behavioral/Culture Fit (0-100)
 Does the role and company culture match the behavioral profile?
@@ -107,19 +125,20 @@ Does this role advance career goals and contain tasks that energize?
 | 0-39 | Dead end or backwards step |
 
 **Career goals:**
-- [YOUR_CAREER_GOAL_1]
-- [YOUR_CAREER_GOAL_2]
-- [YOUR_CAREER_GOAL_3]
+- First role at a large, well-run organization (major tech / 大厂, listed company, bank, Big Four) to learn how a real business operates — compound growth in skills and responsibility is the #1 priority
+- Maximum proximity to clients and to the business line (近客户、近业务)
+- Long term: build broad commercial capability toward founding a business (创业)
+- Also interested: supply chain / product-supply management (supported by MSc coursework in Global Supply Chain Management; confirmed 2026-09-15)
 
 **Motivation filter:** Evaluate not just whether you *can* do the tasks, but whether the tasks will *energize* you. Consider:
-- Tasks that energize: [YOUR_ENERGIZING_TASKS]
-- Tasks that drain: [YOUR_DRAINING_TASKS]
+- Tasks that energize: client interaction and communication; visible business outcomes; learning from strong colleagues; structured training and rotation programmes
+- Tasks that drain: solitary deep quantitative work; pure legal practice; repetitive back-office tasks with no business contact
 - Non-task factors: leadership style, department culture, company values, degree of autonomy
 
 **Life situation alignment:** Consider personal constraints:
-- **Security**: [YOUR_FINANCIAL_SITUATION_CONTEXT]
-- **Flexibility**: [YOUR_SCHEDULE_CONSTRAINTS]
-- **Professional development**: [YOUR_GROWTH_PRIORITIES]
+- **Security**: first full-time job; salary floors HKD 20,000/month (HK) and RMB 10,000/month (mainland). Exceptional training/growth value can offset a moderate gap — flag, don't auto-reject
+- **Flexibility**: mobile across the Greater Bay Area (Hong Kong > Shenzhen > Guangzhou)
+- **Professional development**: training programmes, mentorship, and rotations are highly valued; learning compound is the stated top priority
 
 ### 6. Salary Benchmark (Optional)
 

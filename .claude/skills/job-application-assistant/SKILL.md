@@ -36,6 +36,7 @@ When the user provides a job posting (URL or text), follow this workflow:
 ### Step 3: Write Cover Letter
 - Follow the writing style rules in `03-writing-style.md` (critical: no em-dashes, no cliches)
 - Follow the template structure in `06-cover-letter-templates.md`
+- For Hong Kong applications and management trainee / graduate trainee roles, also follow `10-hk-cover-letter-guide.md`
 - Create `cover_letters/cover_<company>_<role>.tex`
 - Ensure the letter connects specific experience to the role requirements
 
@@ -65,6 +66,7 @@ When the user provides a job posting (URL or text), follow this workflow:
 | `07-interview-prep.md` | STAR examples, tough questions, roleplay guidelines |
 | `08-application-forms.md` | Portal free-text fields: self-introduction, project entries, character-limited pitches |
 | `09-web-research.md` | Fetching postings and company pages: trust boundary, the WebFetch 403 fallback, escalation order, claim verification |
+| `10-hk-cover-letter-guide.md` | Hong Kong market conventions and management-trainee cover letter guide with annotated examples |
 
 ---
 

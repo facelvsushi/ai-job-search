@@ -256,6 +256,8 @@ If the user provides a single CV/resume:
 4. Ask follow-up questions for gaps (behavioral profile, career goals, deal-breakers, languages and proficiency levels if not already extracted, salary expectations, references).
 5. Proceed to Step 3 (file generation).
 
+**Two CVs in different languages (e.g. one Simplified Chinese, one English):** they describe the same person, so merge their facts into **one** profile — do not create two profiles. The two languages are two renderings of the same content, not two content sets. If the two CVs disagree on a fact, surface it as a cross-reference conflict and ask which is correct. Record which language serves which region via Section 9's `CV language by region:` table, not by duplicating the profile.
+
 ---
 
 ## Path C: Interview Mode
@@ -334,7 +336,7 @@ Ask about:
 - **Target companies (optional):** "Are there specific companies you'd like to monitor for openings?"
 - **Geographic scope:** "Which cities or regions should I search in? How far are you willing to commute?" Use this to define the location filter tiers (ideal, acceptable, borderline, too far).
 - **Job portals:** "The framework ships country-agnostic search CLIs (`linkedin-search`, `freehire-search`, enabled by default) plus Danish portal demos (Jobindex, Jobbank, Jobdanmark, Jobnet) that ship **disabled**. `/scrape` auto-discovers whatever portal skills are installed under `.agents/skills/` and skips any with `enabled: false`. Which portals fit your market?" **Then act on the answer:** if the user's market is Denmark (or they ask for the Danish boards), edit each of the four Danish `SKILL.md` files and set `enabled: true` in the frontmatter; otherwise leave them disabled and say so - they cost nothing while disabled and can be enabled later by flipping the flag. If the user needs a local board that is not shipped, guide them to `/add-portal` (market-specific skills live in their fork). WebSearch/`site:` queries remain the fallback for portals without a CLI skill.
-- **CV language:** "Should your CVs be written in English (the default, accepted in most markets), or in your market's language?" Record the answer as a `CV language: <language>` line in CLAUDE.md's Identity section. Cover letters always match each posting's language automatically; this setting governs the CV only. If the user is unsure, keep English and note they can re-run `/setup --section search` to change it.
+- **CV language by region:** "Your CVs should be written in which language, for which regions?" Ask per target region — e.g. Simplified Chinese (简体中文) for mainland China, English for Hong Kong — plus a Default for any unmatched region. Record the answer as a `CV language by region:` table (one row per region + a Default row) in CLAUDE.md's Identity section. Cover letters always match each posting's language automatically; this table governs the CV only. If the user is unsure, default every region to English and note they can re-run `/setup --section search` to change it.
 
 **Important:** Also suggest role types the user may not have considered, based on their skill profile. For example:
 - If they have strong Python + domain expertise: "Have you considered roles like 'Technical Consultant' or 'Solutions Engineer' in your domain?"
@@ -350,7 +352,7 @@ This proactive suggestion step helps users discover career paths they might not 
 Once data collection is complete, generate or finish populating the following files. **For Path A**, the seven skill files are already populated by Step A7; check each before writing and skip if its content is no longer placeholder text.
 
 ### 1. Update `CLAUDE.md`
-Replace all `[PLACEHOLDER]` tokens with the user's actual information. Keep the structure, workflow, and verification checklist intact.
+Replace all `[PLACEHOLDER]` tokens with the user's actual information. Keep the structure, workflow, and verification checklist intact. Fill the `CV language by region:` table from Section 9's answers — one row per region, plus a Default row.
 
 ### 2. Populate `01-candidate-profile.md` *(Path B and C; skip if Path A populated it)*
 Write the full candidate profile with structured sections: Identity (including Languages, with levels), Education, Professional Experience, Independent Projects, Technical Skills, Publications, Awards, References.

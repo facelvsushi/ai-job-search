@@ -32,6 +32,7 @@ v1 preps for a **specific application**. Generic no-target practice is out of sc
    - `.claude/skills/job-application-assistant/01-candidate-profile.md`
    - `.claude/skills/job-application-assistant/02-behavioral-profile.md`
    - `.claude/skills/job-application-assistant/04-job-evaluation.md`
+5. **Identify which CV version the interviewer read.** Detect the language of the archived `cv_draft.tex` (and `cover_letter.tex`) from its actual text — Simplified Chinese vs English — and note it. This is the CV version to prep against; state it in the prep-pack header (Step 3) so the user never mixes up the mainland-Chinese CV with the Hong-Kong English CV.
 
 ---
 
@@ -52,7 +53,7 @@ Additions for interview purposes:
 
 ## Step 3: Build the Prep Pack
 
-Assemble a stage-appropriate prep document with these sections:
+Assemble a stage-appropriate prep document with these sections. Header the pack with the application identity — company, role, stage, date, and **which CV version/language the interviewer read** (from Step 1, e.g. "CV version: English (Hong Kong)") — so every talking point is anchored to the right document.
 
 ### 1. Likely questions
 Derive from four sources, in priority order:

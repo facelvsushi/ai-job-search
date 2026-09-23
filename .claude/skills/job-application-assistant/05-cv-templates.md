@@ -11,13 +11,13 @@ framework_version: 1.4.3
 All CVs use the moderncv LaTeX package with the "banking" style and "blue" color scheme.
 
 **Output file:** `cv/main_<company>_<role>.tex`
-**Compile with:** **lualatex** on MiKTeX/TeX Live. pdflatex often fails on modern MiKTeX installs with `fontawesome5` font-expansion errors; lualatex handles the same sources cleanly.
+**Compile with:** **xelatex** on MiKTeX/TeX Live. The template loads `xeCJK`, so one file renders both Latin and CJK (Chinese) text; xelatex + fontspec handles this and `fontawesome5` cleanly. pdflatex fails on modern MiKTeX with `fontawesome5` font-expansion errors — do not use it.
 **Master reference:** `cv/main_example.tex` (comprehensive CV with all competencies, experience, and achievements - use as source when building targeted CVs)
 
 ### Compile command
 
 ```bash
-cd cv && lualatex -interaction=nonstopmode main_<company>_<role>.tex
+cd cv && xelatex -interaction=nonstopmode main_<company>_<role>.tex
 ```
 
 Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. Any page count other than 2 is a failure that must be fixed before presenting to the user.
@@ -41,6 +41,13 @@ Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. A
 \colorlet{namecolor}{color1}
 \renewcommand*{\sectionstyle}[1]{{\sectionfont\color{color1}#1}}
 
+% CJK support: one template renders both Latin and Chinese text via xelatex + xeCJK.
+% Microsoft YaHei ships with Windows; swap both font lines for Noto Sans CJK SC /
+% Source Han Sans SC on other platforms. Loading xeCJK is inert for a Latin-only CV.
+\usepackage{xeCJK}
+\setCJKmainfont{Microsoft YaHei}
+\setCJKsansfont{Microsoft YaHei}
+
 \usepackage[utf8]{inputenc}
 % moderncv loads hyperref itself in an \AtEndPreamble hook, so \hypersetup
 % must go in an \AtEndPreamble of our own: on moderncv < 2.4 a top-level
@@ -52,7 +59,7 @@ Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. A
     linkcolor=blue,
     filecolor=magenta,
     urlcolor=blue,
-    pdftitle={[YOUR_NAME] - CV},
+    pdftitle={Cheng Sz Chak - CV},
     % Keep pdfpagemode=UseNone: this block runs after moderncv's own
     % \AtEndPreamble (moderncv.cls sets pdfpagemode there), so a FullScreen
     % value here would win and open every CV in fullscreen presentation mode.
@@ -61,14 +68,18 @@ Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. A
 \usepackage[scale=0.77]{geometry}
 \usepackage{import}
 
-% Personal data
-\name{[FIRST_NAME]}{[LAST_NAME]}
+% Personal data - Cheng Sz Chak. HK convention, surname first: renders "Cheng Sz Chak".
+% For Simplified-Chinese (mainland) CVs: \name{郑}{偲泽} and swap the email to
+% 2910799772@qq.com (QQ mailbox) per the region table in CLAUDE.md.
+\name{Cheng}{Sz Chak}
 % If you have no address to list, DELETE this whole line. \address{}{}{} fails
 % with "There's no line here to end" on every moderncv version.
-\address{[YOUR_ADDRESS]}{}{}
-\phone[mobile]{[YOUR_PHONE]}
-\email{[YOUR_EMAIL]}
-\extrainfo{\href{[YOUR_LINKEDIN_URL]}{LinkedIn}, \href{[YOUR_GITHUB_URL]}{GitHub}}
+\address{Hong Kong}{}{}
+\phone[mobile]{(+86) 15819956883}
+\email{Chengszc60@gmail.com}
+% LinkedIn vanity name is 偲泽-郑, so the URL is percent-encoded for PDF/ATS safety.
+% If the profile switches to an ASCII custom URL (e.g. /in/cheng-sz-chak), use the plain form.
+\extrainfo{\href{https://www.linkedin.com/in/\%E5\%81\%B2\%E6\%B3\%BD-\%E9\%83\%91-a8bb07381}{LinkedIn}}
 
 \begin{document}
 \makecvtitle
@@ -86,7 +97,7 @@ Expected output: `Output written on main_<company>_<role>.pdf (2 pages, ...)`. A
 
 ### Color overrides
 
-The `\renewcommand*` on `\namefont` and the three `\colorlet` lines in the preamble are required on lualatex+MiKTeX. Without them the name and section headings render in black even though `\moderncvcolor{blue}` is set, which looks inconsistent with the rest of the blue accent scheme (links, bullet markers, contact icons). The cause: `moderncvstylebanking.sty` defines the name colours with `\colorlet`, which *copies* the accent colour as it is before the scheme is applied, so the name colours are frozen to the pre-scheme value; re-assigning them with `\colorlet` after `\moderncvcolor{blue}` (as the preamble does) re-pins them to `color1`. `\namefont` is the shared hook every name-style macro routes through, so the block is version-agnostic - including moderncv 2.3.1 from Debian/Ubuntu apt, which has no `\firstnamestyle`/`\lastnamestyle` at all. Both names render bold; if you prefer regular weight, change `\bfseries` to `\mdseries` in the `\namefont` line (the weight now lives there, so it applies to the whole name). Don't drop the overrides - on most modern installs the defaults render visibly wrong.
+The `\renewcommand*` on `\namefont` and the three `\colorlet` lines in the preamble are required on xelatex/lualatex + MiKTeX. Without them the name and section headings render in black even though `\moderncvcolor{blue}` is set, which looks inconsistent with the rest of the blue accent scheme (links, bullet markers, contact icons). The cause: `moderncvstylebanking.sty` defines the name colours with `\colorlet`, which *copies* the accent colour as it is before the scheme is applied, so the name colours are frozen to the pre-scheme value; re-assigning them with `\colorlet` after `\moderncvcolor{blue}` (as the preamble does) re-pins them to `color1`. `\namefont` is the shared hook every name-style macro routes through, so the block is version-agnostic - including moderncv 2.3.1 from Debian/Ubuntu apt, which has no `\firstnamestyle`/`\lastnamestyle` at all. Both names render bold; if you prefer regular weight, change `\bfseries` to `\mdseries` in the `\namefont` line (the weight now lives there, so it applies to the whole name). Don't drop the overrides - on most modern installs the defaults render visibly wrong.
 
 ### Spacing inside itemize lists (important)
 
@@ -129,12 +140,15 @@ When the role sits outside your home domain, **lead with the domain-transfer arg
 
 **Create 2-3 profile statement templates for your main role types:**
 
-<!-- SETUP: These are populated based on your background -->
-**For [YOUR_PRIMARY_ROLE_TYPE] roles:**
-> [YOUR_PROFILE_STATEMENT_TEMPLATE_1]
+<!-- Populated by /setup, 2026-09-15. Every factual claim traces to 01-candidate-profile.md. -->
+**For management-trainee / graduate-programme roles (banks, corporates, insurers):**
+> Recent MSc in Management graduate from The Chinese University of Hong Kong (CGPA 3.1/4.0, Term 3 GPA 3.6) with an LLB and Economics minor from Sun Yat-sen University. Trilingual in Cantonese, Mandarin and English, with client-facing experience across brand marketing at BYD, client coordination at a law firm, and tax audit. Brings structured communication and cross-functional coordination to a graduate programme, motivated to learn how a large business runs end to end.
 
-**For [YOUR_SECONDARY_ROLE_TYPE] roles:**
-> [YOUR_PROFILE_STATEMENT_TEMPLATE_2]
+**For marketing & brand roles (including game promotion):**
+> Marketing intern at BYD who co-planned a government-partnered event for 20+ foreign KOLs, presented brand strengths bilingually (Chinese/English) and coordinated promotional video production. MSc in Management coursework in Digital Marketing, Strategic Consumer Insights and Strategic Management. An avid gamer targeting brand and game-promotion roles where bilingual storytelling meets execution.
+
+**For tax & consulting roles (Big Four):**
+> LLB with Economics minor (Sun Yat-sen University) plus an MSc in Management covering Corporate Finance, Financial and Managerial Accounting, and Sustainable Finance. Contributed substantive audit procedures on five accounts at a tax agent firm and documented IP and data-compliance case files at a law firm. Detail-oriented graduate targeting tax and consulting associate roles where legal-financial literacy and client communication both count.
 
 Statements labeled *[Used for: <company>_<role>]* were extracted from archived application drafts by `/setup` Path A. They are **phrasing references, never fact sources**: when drafting from one, every factual claim still comes from `01-candidate-profile.md` - a past tailored draft does not vouch for its own accuracy.
 
@@ -236,7 +250,7 @@ Related trap: a bullet whose text begins with a literal `[` must be braced - `\i
 
 After writing the CV and before presenting to the user, always compile and visually inspect the PDF. Iterate until the layout is clean. Workflow:
 
-1. Run `lualatex -interaction=nonstopmode main_<company>_<role>.tex`
+1. Run `xelatex -interaction=nonstopmode main_<company>_<role>.tex`
 2. Check the output page count: must be exactly 2
 3. Read the PDF via the Read tool and visually inspect both pages
 4. Check for **orphaned entries**: a `\cventry` title line must never sit alone at the bottom of page 1 with its bullets on page 2
@@ -275,7 +289,7 @@ Extraction tries **pypdf** first (`pip install pypdf`, BSD license), then Popple
 What to check in the extraction:
 
 - **Contact details as literal text.** The stock template's fontawesome contact icons extract as glyph names (`MOBILE-ALT`, `Envelope`) - harmless noise, because the actual address and number are printed beside them. The failure mode is a contact detail carried *only* by an icon or a hyperlink (like the `LinkedIn` link text, whose URL is not in the text layer): invisible to an ATS. The email address must always appear as printed text.
-- **No garbled output.** `(cid:NNN)` markers or `�` characters mean a font is embedded without a Unicode mapping - an ATS sees the same garbage. This shows up with unusual fonts in custom templates, not with the stock moderncv setup under lualatex.
+- **No garbled output.** `(cid:NNN)` markers or `�` characters mean a font is embedded without a Unicode mapping - an ATS sees the same garbage. This shows up with unusual fonts in custom templates, not with the stock moderncv setup under xelatex.
 - **Reading order.** The stock banking style is single-column, so extraction order matches visual order. Custom templates (via `/add-template`) with sidebars or multi-column layouts can interleave unrelated lines; if extraction order is scrambled, the user is trading ATS compatibility for looks and should be told.
 - **Keyword coverage.** Match the posting's required/preferred terms against the extracted text, in the posting's language. Prefer the posting's exact term over a synonym when it is truthfully applicable - ATS matching is often literal. Never add a keyword the profile does not support.
 

@@ -1,0 +1,17 @@
+{
+  "name": "gba-hk-search-cli",
+  "version": "1.0.0",
+  "description": "CLI for GBA jobs open to Hong Kong residents: HK Labour Dept GBA Youth Employment Scheme vacancies (jobs.gov.hk) + WeChat 公众号 article ingestion. Zero runtime dependencies. Personal use only (robots-restricted source).",
+  "type": "module",
+  "main": "src/cli.ts",
+  "scripts": {
+    "start": "bun run src/cli.ts",
+    "test": "bun test --timeout 30000",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/bun": "1.3.14"
+  }
+}

@@ -1,10 +1,12 @@
-%% Example CV - [YOUR_NAME]
+%% Example CV - Cheng Sz Chak (鄭偲澤 / 郑偲泽)
 %% Comprehensive overview of all competencies, experience, and achievements.
 %% Use as a master reference when tailoring role-specific CVs.
 %%
-%% SETUP: Run /setup to populate this with your actual information.
-%% Compile with: lualatex main_example.tex
-%% (pdflatex often fails on modern MiKTeX with fontawesome5 font-expansion errors.)
+%% Compile with: xelatex main_example.tex
+%% (xelatex handles xeCJK + fontawesome5; pdflatex often fails on modern MiKTeX
+%% with fontawesome5 font-expansion errors.)
+%% For mainland applications use the Simplified-Chinese variant and swap the
+%% email to the QQ mailbox 2910799772@qq.com per CLAUDE.md's region table.
 
 \documentclass[11pt,a4paper,sans]{moderncv}
 \moderncvstyle{banking}
@@ -22,6 +24,13 @@
 \colorlet{namecolor}{color1}
 \renewcommand*{\sectionstyle}[1]{{\sectionfont\color{color1}#1}}
 
+% CJK support: one template renders both Latin and Chinese text via xelatex + xeCJK.
+% Microsoft YaHei ships with Windows; swap both font lines for Noto Sans CJK SC /
+% Source Han Sans SC on other platforms. Loading xeCJK is inert for a Latin-only CV.
+\usepackage{xeCJK}
+\setCJKmainfont{Microsoft YaHei}
+\setCJKsansfont{Microsoft YaHei}
+
 \usepackage[utf8]{inputenc}
 % moderncv loads hyperref itself in an \AtEndPreamble hook, so \hypersetup
 % must go in an \AtEndPreamble of our own: on moderncv < 2.4 a top-level
@@ -33,7 +42,7 @@
     linkcolor=blue,
     filecolor=magenta,
     urlcolor=blue,
-    pdftitle={[YOUR_NAME] - CV},
+    pdftitle={Cheng Sz Chak - CV},
     % Keep pdfpagemode=UseNone: this block runs after moderncv's own
     % \AtEndPreamble (moderncv.cls sets pdfpagemode there), so a FullScreen
     % value here would win and open every CV in fullscreen presentation mode.
@@ -43,13 +52,16 @@
 \usepackage{import}
 
 % personal data
-\name{[First]}{[Last]}
+% HK convention, surname first: renders "Cheng Sz Chak".
+% For Simplified-Chinese CVs: \name{郑}{偲泽}
+\name{Cheng}{Sz Chak}
 % If you have no address to list, DELETE this whole line. \address{}{}{} fails
 % with "There's no line here to end" on every moderncv version.
-\address{[Your Address, City, Country]}{}{}
-\phone[mobile]{[+XX XXXXXXXXXX]}
-\email{[your.email@example.com]}
-\extrainfo{\href{[https://linkedin.com/in/your-profile]}{LinkedIn}, \href{[https://github.com/your-username]}{GitHub}}
+\address{Hong Kong}{}{}
+\phone[mobile]{(+86) 15819956883}
+\email{Chengszc60@gmail.com}
+% LinkedIn vanity name is 偲泽-郑, percent-encoded for PDF/ATS safety. No GitHub account.
+\extrainfo{\href{https://www.linkedin.com/in/\%E5\%81\%B2\%E6\%B3\%BD-\%E9\%83\%91-a8bb07381}{LinkedIn}}
 
 \begin{document}
 
@@ -60,7 +72,7 @@
 % ============================================================
 
 \vspace{6pt}
-\small{[Write a 3-5 line profile statement tailored to the role you're applying for. Focus on what makes you uniquely qualified. Example: "Data scientist with a PhD in [field] and X years of industry experience. Combines deep domain expertise in [domain] with strong applied machine learning and Python development skills. Experienced in developing end-to-end ML pipelines, from data ingestion to stakeholder-facing dashboards."]}
+\small{Recent MSc in Management graduate from The Chinese University of Hong Kong (CGPA 3.1/4.0, Term 3 GPA 3.6) with an LLB and Economics minor from Sun Yat-sen University. Trilingual communicator (Cantonese, Mandarin, English) with client-facing experience spanning brand marketing at BYD, client coordination at a law firm, and tax audit. Seeking graduate roles where bilingual stakeholder communication and cross-functional coordination create value from day one.}
 
 % ============================================================
 %     CORE COMPETENCIES
@@ -70,15 +82,17 @@
 \vspace{1pt}
 \begin{itemize}
 
-\item \textbf{[Skill Category 1]}: [Specific skills, frameworks, tools. Be concrete.]
+\item \textbf{Client \& Stakeholder Communication}: bilingual (CN/EN) brand presentations to 20+ foreign KOLs; client inquiry handling; partner- and senior-management reporting; cross-department coordination.
 
-\item \textbf{[Skill Category 2]}: [Specific skills, frameworks, tools.]
+\item \textbf{Marketing \& Brand Execution}: weekly competitor- and campaign-event tracking and analysis; large-scale event co-planning with government partners; promotional video production coordination.
 
-\item \textbf{[Skill Category 3]}: [Specific skills, frameworks, tools.]
+\item \textbf{Project \& Case Coordination}: Gantt-chart case tracking; cross-department budgeting; event logistics; process and policy improvement (reimbursement, performance review).
 
-\item \textbf{[Skill Category 4]}: [Domain expertise, methods, approaches.]
+\item \textbf{Finance \& Accounting Foundations}: substantive audit procedures on 5 accounts; notes to consolidated financial statements; annual association Balance Sheet and Income Statement.
 
-\item \textbf{[Skill Category 5]}: [Tools, platforms, software.]
+\item \textbf{Legal \& Compliance Context}: commercial, economic and finance law coursework; IP and data-compliance case documentation (business context, not legal practice).
+
+\item \textbf{AI-Assisted Productivity}: agentic coding and workflow automation with Claude Code.
 
 \end{itemize}
 
@@ -91,31 +105,38 @@
 \begin{itemize}
 
 % --- Most Recent Role ---
-\item{\cventry{[YYYY-Present]}{[Job Title]}{[Company]}{[City, Country]}{}{\vspace{1pt}
+\item{\cventry{Jun 2025 - Aug 2025}{Brand Marketing Dept Intern}{BYD Company Limited}{Shenzhen, China}{}{\vspace{1pt}
 \begin{itemize}
-    \item {[Achievement or responsibility 1 - be specific, use numbers where possible]}
-    \item {[Achievement or responsibility 2]}
-    \item {[Achievement or responsibility 3]}
-    \item {[Achievement or responsibility 4]}
+    \item {Tracked weekly hot marketing events across the industry; benchmarked against BYD's own campaigns, extracted key findings, and reported to department leaders}
+    \item {Co-planned a large-scale event with the local government, attended by 20+ foreign KOLs}
+    \item {Presented brand strengths bilingually (Chinese/English) to foreign KOL video creators; coordinated promotional video production}
 \end{itemize}}}
 
 \vspace{3pt}
 
 % --- Previous Role ---
-\item{\cventry{[YYYY-YYYY]}{[Job Title]}{[Company]}{[City, Country]}{}{\vspace{1pt}
+\item{\cventry{Jul 2023 - Dec 2023}{Paralegal}{Guangdong Kingbridge Law Firm}{Guangzhou, China}{}{\vspace{1pt}
 \begin{itemize}
-    \item {[Achievement or responsibility 1]}
-    \item {[Achievement or responsibility 2]}
-    \item {[Achievement or responsibility 3]}
+    \item {Tracked case progress with Gantt charts; coordinated meetings among partners, senior attorneys, and clients; responded to client inquiries}
+    \item {Documented and reviewed legal complaints and evidence lists for IP and data-compliance cases under Chinese law}
 \end{itemize}}}
 
 \vspace{3pt}
 
 % --- Earlier Role ---
-\item{\cventry{[YYYY-YYYY]}{[Job Title]}{[Company]}{[City, Country]}{}{\vspace{1pt}
+\item{\cventry{Jul 2022 - Aug 2022}{Tax Audit Intern}{Guangzhou Jinbao Tax Agent Firm}{Guangzhou, China}{}{\vspace{1pt}
 \begin{itemize}
-    \item {[Achievement or responsibility 1]}
-    \item {[Achievement or responsibility 2]}
+    \item {Participated in substantive audit procedures on 5 accounts (monetary funds, expenses, main business income, tax adjustments)}
+    \item {Drafted notes to consolidated financial statements; liaised with client accountants for audit evidence}
+\end{itemize}}}
+
+\vspace{3pt}
+
+% --- Leadership ---
+\item{\cventry{Sep 2023 - Aug 2024}{Internal Affairs Dept Head}{Hong Kong Students' Association of Guangdong}{Guangzhou, China}{}{\vspace{1pt}
+\begin{itemize}
+    \item {Introduced a monthly performance assessment and recognition mechanism; refined financial reimbursement policies; coordinated cross-department budgets}
+    \item {Prepared the annual Balance Sheet and Income Statement; selected as an HK outstanding student representative for a Central Party School study visit, Beijing}
 \end{itemize}}}
 
 \end{itemize}
@@ -128,14 +149,14 @@
 \vspace{1pt}
 \begin{itemize}
 
-\item{\cventry{[YYYY-YYYY]}{[Degree] in [Field]}{[Institution]}{[City, Country]}{}{\vspace{1pt}
-Thesis: ``[Thesis Title].'' [Brief description of research focus.]
+\item{\cventry{Aug 2025 - Aug 2026}{MSc in Management}{The Chinese University of Hong Kong}{Hong Kong}{}{\vspace{1pt}
+CGPA 3.105/4.000; Term 3 GPA 3.633 (Strategic Management A-, MiM Capstone A-, Sustainable Finance A-). Coursework: Corporate Finance, Financial \& Managerial Accounting, Global Supply Chain Management, Quantitative Analysis for Decision Making, Digital Marketing, Strategic Consumer Insights, Strategic Management, MiM Capstone.
 }}
 
 \vspace{3pt}
 
-\item{\cventry{[YYYY-YYYY]}{[Degree] in [Field]}{[Institution]}{[City, Country]}{}{\vspace{1pt}
-[Brief description or key topics.]
+\item{\cventry{Sep 2021 - Jun 2025}{Bachelor of Laws (LLB), Minor in Economics}{Sun Yat-sen University}{Guangzhou, China}{}{\vspace{1pt}
+Score 81/100 (3.3/4.0). Modules: Commercial Law, Economic Law, Finance Law, Principle of Economics, Global Economic Theory and Practice, Legal System and Case Law in Hong Kong.
 }}
 
 \end{itemize}
@@ -147,27 +168,17 @@ Thesis: ``[Thesis Title].'' [Brief description of research focus.]
 \section{Languages}
 \vspace{1pt}
 \begin{itemize}
-\item {[Language 1] (native), [Language 2] (fluent), [Language 3] (intermediate).}
+\item {Cantonese (native), Mandarin (native), English (professional working proficiency).}
 \end{itemize}
 
 % ============================================================
-%     PUBLICATIONS (optional)
-% ============================================================
-
-\section{Publications}
-\vspace{1pt}
-\begin{itemize}
-\item {[Author(s)] ([Year]). [Title]. [Journal/Conference]. \href{[DOI_URL]}{DOI link}}
-\end{itemize}
-
-% ============================================================
-%     HONORS AND AWARDS (optional)
+%     HONORS AND AWARDS
 % ============================================================
 
 \section{Honors and Awards}
 \vspace{1pt}
 \begin{itemize}
-\item{\textbf{[Award Name]} -- [Event/Organization] ([Year]).}
+\item{\textbf{HK Outstanding Student Representative}, Central Party School (中央党校) study visit, Beijing (2023-24).}
 \end{itemize}
 
 % ============================================================
