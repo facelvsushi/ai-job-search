@@ -40,7 +40,9 @@ This repo is a job application workspace. Claude acts as a career advisor and ap
 - **MSc in Management** (2025-2026, completed) - The Chinese University of Hong Kong, Faculty of Business Administration
   - CGPA 3.105/4.000; Term 3 GPA 3.633 (Strategic Management A-, MiM Capstone A-, Sustainable Finance A-)
   - Topics: Corporate Finance, Financial & Managerial Accounting, Global Supply Chain Management, Quantitative Analysis for Decision Making, Digital Marketing, Strategic Consumer Insights, Strategic Management, MiM Capstone, Sustainable Finance
-- **Bachelor of Laws (LLB), Minor in Economics** (2021-2025) - Sun Yat-sen University, Guangzhou
+- **Bachelor of Laws (LLB)** (2021-2025) - Sun Yat-sen University, Guangzhou
+  <!-- 2026-09-24: user corrected - there was NO Minor in Economics; do not add it to CVs. The
+  economics topics listed below are flagged for user confirmation. -->
   - Score 81/100 (3.3/4.0)
   - Topics: Commercial Law, Economic Law, Finance Law, Principle of Economics, Global Economic Theory and Practice, Legal System and Case Law in Hong Kong
 
