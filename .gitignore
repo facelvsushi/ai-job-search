@@ -83,6 +83,13 @@ documents/postings/**
 # tools/security_guards.py pins it in REQUIRED_IGNORE_RULES.
 documents/interview/**
 !documents/**/.gitkeep
+# Personal files written directly to documents/ root (not a subfolder): the
+# application profile card mirrors the CV's personal particulars, and the
+# interview prep docx packs name employers and quote what was submitted.
+documents/application_profile_card.md
+documents/interview_prep_*.docx
+# Word owner-lock files (~$foo.docx while the doc is open)
+documents/~$*
 
 # Personal job search tracking
 job_search_tracker.csv
